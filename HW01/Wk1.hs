@@ -22,9 +22,7 @@ sumDigits :: [Integer] -> Integer
 sumDigits xs = foldl (+) 0 (concatMap toDigits xs)
 
 validate :: Integer -> Bool
-validate n
-  | sumDigits(doubleEveryOther(toDigits n)) `mod` 10 == 0 = True
-  | otherwise = False
+validate n = sumDigits(doubleEveryOther(toDigits n)) `mod` 10 == 0
 
 type Peg = String
 type Move = (Peg, Peg)
