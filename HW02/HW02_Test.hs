@@ -1,6 +1,6 @@
 module HW02_Test where
 
-import HW02(formableBy, wordsFrom, wordFitsTemplate, wordsFittingTemplate)
+import HW02
 import Test.HUnit
 
 -- Test Scrabble
@@ -53,4 +53,35 @@ filledTemplateTrue = TestCase $ assertEqual
 allWordsFittingTemplate = TestCase $ assertEqual
   "all words that match template" ["acre","bare","carb","care","carl","earl"] ( wordsFittingTemplate "??r?" ['c','x','e','a','b','c','l'] )
 
-main = runTestTT $ TestList [ validScrabbleCases, invalidScrabbleCases, wordsFormableCases, templateCases ]
+valueCases = TestLabel "word values" ( TestList [
+  careValue, quizValue ] )
+
+careValue = TestCase $ assertEqual
+  "value for word care" 6 ( scrabbleValueWord "care" )
+quizValue = TestCase $ assertEqual
+  "value for word quiz" 22 ( scrabbleValueWord "quiz" )
+
+bestWordsCases = TestLabel "best words" ( TestList [
+  catBat ] )
+
+catBat = TestCase $ assertEqual
+  "cat bat" ["cat", "bat"] ( bestWords ["cat", "rat", "bat"] )
+
+gameTileCases = TestLabel "game tile score cases" ( TestList [
+  gameTiles1, gameTiles2, gameTiles3 ] )
+
+gameTiles1 = TestCase $ assertEqual
+  "peace 1" 27 (scrabbleValueTemplate "?e??3" "peace")
+gameTiles2 = TestCase $ assertEqual
+  "peace 2" 24 (scrabbleValueTemplate "De?2?" "peace")
+gameTiles3 = TestCase $ assertEqual
+  "peace 3" 11 (scrabbleValueTemplate "??Tce" "peace")
+
+main = runTestTT $ TestList [
+  validScrabbleCases,
+  invalidScrabbleCases,
+  wordsFormableCases,
+  templateCases,
+  valueCases,
+  bestWordsCases,
+  gameTileCases ]

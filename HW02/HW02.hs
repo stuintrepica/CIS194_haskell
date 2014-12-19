@@ -1,4 +1,4 @@
-module HW02(formableBy, wordsFrom, wordFitsTemplate, wordsFittingTemplate) where
+module HW02 where
 
 import Words
 import Data.List
@@ -28,23 +28,33 @@ type STemplate = Template
 -- Write your code below:
 formableBy :: String -> Hand -> Bool
 formableBy [] _ = True
-formableBy (w:ws) hand 
-  | w `notElem` hand = False
-  | w `elem ` hand = formableBy ws (delete w hand)
+formableBy (w:ws) h
+  | w `notElem` h = False
+  | w `elem ` h = formableBy ws (delete w h)
 
 wordsFrom :: Hand -> [String]
-wordsFrom hand = filter (`formableBy` hand) allWords
+wordsFrom h = filter (`formableBy` h) allWords
 
 wordFitsTemplate :: Template -> Hand -> String -> Bool
 wordFitsTemplate [] _ [] = True
-wordFitsTemplate template _ [] = False
+wordFitsTemplate _ _ [] = False
 wordFitsTemplate [] _ _ = False
-wordFitsTemplate (t:ts) hand (f:fs)
-  | f == t = wordFitsTemplate ts hand fs
-  | (f `elem` hand && t == '?') = wordFitsTemplate ts (delete f hand) fs
+wordFitsTemplate (t:ts) h (s:ss)
+  | s == t = wordFitsTemplate ts h ss
+  | (s `elem` h && t == '?') = wordFitsTemplate ts (delete s h) ss
   | otherwise = False
 
 wordsFittingTemplate :: Template -> Hand -> [String]
 wordsFittingTemplate _ [] = []
-wordsFittingTemplate template hand = filter (\w -> wordFitsTemplate template hand w) allWords
+wordsFittingTemplate t h = filter (\w -> wordFitsTemplate t h w) allWords
 
+scrabbleValueWord :: String -> Int
+scrabbleValueWord [] = 0
+scrabbleValueWord w = foldl (+) 0 (map scrabbleValue w)
+
+bestWords :: [String] -> [String]
+bestWords [] = []
+bestWords wordsList = filter (\w -> (scrabbleValueWord w) == maximum(map scrabbleValueWord wordsList)) wordsList
+
+scrabbleValueTemplate :: STemplate -> String -> Int
+scrabbleValueTemplate [] [] = 0
