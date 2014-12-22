@@ -58,3 +58,15 @@ bestWords wordsList = filter (\w -> (scrabbleValueWord w) == maximum(map scrabbl
 
 scrabbleValueTemplate :: STemplate -> String -> Int
 scrabbleValueTemplate [] [] = 0
+scrabbleValueTemplate t s = sum (zipWith (*) (map tileMultiplier t) (map scrabbleValue s)) * product (map wordMultiplier t) where
+  tileMultiplier :: Char -> Int
+  tileMultiplier t
+    | t == 'D' = 2
+    | t == 'T' = 3
+    | otherwise = 1
+  
+  wordMultiplier :: Char -> Int
+  wordMultiplier t
+    | t == '2' = 2
+    | t == '3' = 3
+    | otherwise = 1
